@@ -1,22 +1,46 @@
 ﻿using AppWeb.Models;
+using AppWeb.Models.ViewModel;
+using BILL.Service;
 using Microsoft.AspNetCore.Mvc;
+using Models;
 using System.Diagnostics;
+using System.Diagnostics.Contracts;
 
 namespace AppWeb.Controllers
 {
     public class HomeController : Controller
     {
-        private readonly ILogger<HomeController> _logger;
+        private readonly IEmpleadoService _empleadoService;
 
-        public HomeController(ILogger<HomeController> logger)
+        public HomeController(IEmpleadoService empleadoServ)
         {
-            _logger = logger;
+            _empleadoService = empleadoServ;
         }
 
         public IActionResult Index()
         {
             return View();
         }
+        [HttpGet]
+        public async Task< IActionResult> Lista()
+        {
+            IQueryable<Empleado> queryEmpleadoSQL = await _empleadoService.ObtenerTodos();
+
+            List<VMEmpleado> lista = queryEmpleadoSQL.Select(
+                c => new VMEmpleado()
+                {
+                    IdEmpleado = c.IdEmpleado,
+                    Nombre = c.Nombre,
+                    Edad = c.Edad,
+                    FechadeIngreso = c.FechadeIngreso.Value.ToString("dd/MM/yyyy")
+
+                }
+                ).ToList();
+
+            return StatusCode(StatusCodes.Status200OK, lista);
+
+        }
+
 
         public IActionResult Privacy()
         {
