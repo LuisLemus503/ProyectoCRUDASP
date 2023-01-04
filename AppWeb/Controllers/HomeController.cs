@@ -32,6 +32,7 @@ namespace AppWeb.Controllers
                     IdEmpleado = c.IdEmpleado,
                     Nombre = c.Nombre,
                     Edad = c.Edad,
+                    Salario=c.Salario,
                     FechadeIngreso = c.FechadeIngreso.Value.ToString("dd/MM/yyyy")
 
                 }
