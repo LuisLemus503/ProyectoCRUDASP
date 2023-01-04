@@ -42,6 +42,23 @@ namespace AppWeb.Controllers
 
         }
 
+        [HttpPost]
+
+        public async Task<IActionResult> Insertar([FromBody] VMEmpleado modelo) {
+
+            Empleado NuevoModelo = new Empleado()
+            {
+                Nombre=modelo.Nombre,
+                Edad=modelo.Edad,
+                Salario=modelo.Salario,
+                FechadeIngreso=Convert.ToDateTime( modelo.FechadeIngreso)
+            };
+
+            bool respuesta = await _empleadoService.Insertar(NuevoModelo);
+            return StatusCode(StatusCodes.Status200OK, new { valor = respuesta });
+        
+        }
+
 
         public IActionResult Privacy()
         {

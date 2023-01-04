@@ -46,18 +46,22 @@
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
-                <input type="" id="txtIdContacto" value="0" />
+                <input type="" id="txtIdEmpleado" value="0" />
                 <div class="mb-2">
                     <label>Nombre</label>
                     <input type="text" class="form-control" id="txtNombre" />
                 </div>
                 <div class="mb-2">
                     <label>Telefono</label>
-                    <input type="text" class="form-control" id="txtTelefono" />
+                    <input type="text" class="form-control" id="txtEdad" />
+                </div>
+                <div class="mb-2">
+                    <label>Salario</label>
+                    <input type="text" class="form-control" id="txtSalario" />
                 </div>
                 <div class="mb-2">
                     <label>Fecha Nacimiento</label>
-                    <input type="text" class="form-control jf" id="txtFechaNacimiento" />
+                    <input type="text" class="form-control jf" id="txtFechadeIngreso" />
                 </div>
 
             </div>
@@ -68,4 +72,115 @@
         </div>
     </div>
 </div>
+@section Scripts{
 
+    <script>
+
+        const Modelo_base = {
+            idEmpleado: 0,
+            nombre: "",
+            edad: "",
+            salario:"",
+            fechadeIngreso: ""
+        }
+
+        $(document).ready(() => {
+
+            listaContactos();
+        })
+
+        function listaContactos() {
+
+            fetch("Home/Lista")
+                .then((response) => {
+                    return response.ok ? response.json() : Promise.reject(response)
+                })
+                .then((dataJson) => {
+
+                    $("#tbEmpleado tbody").html("");
+
+                    dataJson.forEach((item) => {
+
+                        $("#tbEmpleado tbody").append(
+                            $("<tr>").append(
+                                $("<td>").text(item.nombre),
+                                $("<td>").text(item.edad),
+                                $("<td>").text(item.salario),
+                                $("<td>").text(item.fechadeIngreso),
+                                $("<td>").append(
+                                    $("<button>").addClass("btn btn-primary btn-sm me-2 btn-editar fa fa-pencil").data("modelo", item),
+                                    $("<button>").addClass("btn btn-danger btn-sm btn-eliminar fa fa-trash").data("id", item.idContacto)
+                                )
+                            )
+                        )
+
+                    })
+
+
+                })
+
+        }
+
+        function mostrarModal(modelo) {
+
+            $("#txtIdEmpleado").val(0);
+            $("#txtNombre").val("")
+            $("#txtEdad").val("")
+            $("#txtSalario").val("")
+            $("#txtFechadeIngreso").val("")
+
+            if (modelo != null) {
+
+                $("#txtIdEmpleado").val(modelo.idEmpleado);
+                $("#txtNombre").val(modelo.nombre)
+                $("#txtEdad").val(modelo.edad)
+                $("#txtSalario").val(modelo.salario)
+                $("#txtFechadeIngreso").val(modelo.fechadeIngeso)
+            }
+
+
+
+            $('.modal').modal('show');
+        }
+
+
+        $("#btnNuevo").click(() => {
+
+            mostrarModal(Modelo_base);
+        })
+
+
+        $("#btnGuardar").click(() => {
+            let NuevoModelo = Modelo_base;
+
+            NuevoModelo["idEmpleado"] = $("#txtIdEmpleado").val();
+            NuevoModelo["nombre"] = $("#txtNombre").val();
+            NuevoModelo["edad"] = $("#txtEdad").val();
+            uevoModelo["salario"] = $("#txtSalario").val();
+            NuevoModelo["fechadeIngreso"] = $("#txtFechadeIngreso").val();
+
+            if ($("#txtIdEmpleado").val() == "0") {
+                fetch("Home/Insertar", {
+                    method: "POST",
+                    headers: {
+                        'Content-Type': 'application/json;charset=utf-8'
+                    },
+                    body: JSON.stringify(NuevoModelo)
+                })
+                    .then((response) => {
+                        return response.ok ? response.json() : Promise.reject(response)
+                    })
+                    .then((dataJson) => {
+
+                        if (dataJson.valor) {
+                            alert("registrado");
+                            $('.modal').modal('hide');
+                            listaContactos();
+                        }
+                    })
+            } 
+
+        })
+    </script>
+
+}
