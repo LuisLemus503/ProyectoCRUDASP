@@ -1,0 +1,12 @@
+C:\Users\Luis503\source\repos\ProyectoCRUDCore\BILL\bin\Debug\net6.0\BILL.deps.json
+C:\Users\Luis503\source\repos\ProyectoCRUDCore\BILL\bin\Debug\net6.0\BILL.dll
+C:\Users\Luis503\source\repos\ProyectoCRUDCore\BILL\bin\Debug\net6.0\BILL.pdb
+C:\Users\Luis503\source\repos\ProyectoCRUDCore\BILL\obj\Debug\net6.0\BILL.csproj.AssemblyReference.cache
+C:\Users\Luis503\source\repos\ProyectoCRUDCore\BILL\obj\Debug\net6.0\BILL.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\Luis503\source\repos\ProyectoCRUDCore\BILL\obj\Debug\net6.0\BILL.AssemblyInfoInputs.cache
+C:\Users\Luis503\source\repos\ProyectoCRUDCore\BILL\obj\Debug\net6.0\BILL.AssemblyInfo.cs
+C:\Users\Luis503\source\repos\ProyectoCRUDCore\BILL\obj\Debug\net6.0\BILL.csproj.CoreCompileInputs.cache
+C:\Users\Luis503\source\repos\ProyectoCRUDCore\BILL\obj\Debug\net6.0\BILL.dll
+C:\Users\Luis503\source\repos\ProyectoCRUDCore\BILL\obj\Debug\net6.0\refint\BILL.dll
+C:\Users\Luis503\source\repos\ProyectoCRUDCore\BILL\obj\Debug\net6.0\BILL.pdb
+C:\Users\Luis503\source\repos\ProyectoCRUDCore\BILL\obj\Debug\net6.0\ref\BILL.dll
