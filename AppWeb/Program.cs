@@ -1,4 +1,6 @@
+using BILL.Service;
 using DAL.DataContext;
+using DAL.Repository;
 using Microsoft.EntityFrameworkCore;
 using Models;
 
@@ -12,6 +14,10 @@ builder.Services.AddDbContext<DbpracticaContext>(opciones =>
 
 }
 );
+
+builder.Services.AddScoped<IGenericRepository<Empleado>, EmpleadoRepository>();
+
+builder.Services.AddScoped<IEmpleadoService, EmpleadoService>();
 
 var app = builder.Build();
 
