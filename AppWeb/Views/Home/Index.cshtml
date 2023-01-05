@@ -161,7 +161,7 @@
             NuevoModelo["salario"] = $("#txtSalario").val();
             NuevoModelo["fechadeIngreso"] = $("#txtfechadeIngreso").val();
 
-            if ($("#idEmpleado").val() == "0") {
+            if ($("#txtIdEmpleado").val() == "0") {
                 fetch("Home/Insertar", {
                     method: "POST",
                     headers: {
@@ -180,7 +180,8 @@
                             listaEmpleados();
                         }
                     })
-            } else {
+            }else{
+            
                 fetch("Home/Actualizar", {
                     method: "PUT",
                     headers: {
@@ -199,7 +200,7 @@
                             listaEmpleados();
                         }
                     })
-
+            
             }
 
         })
@@ -209,7 +210,7 @@
             let empleado = $(this).data("modelo")
 
             mostrarModal(empleado)
-           // console.log(empleado);
+            console.log(empleado);
         })
 
         $("#tbEmpleado tbody").on("click", ".btn-eliminar", function () {
