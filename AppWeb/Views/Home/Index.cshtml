@@ -2,7 +2,279 @@
     ViewData["Title"] = "Home Page";
 }
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://docs.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+<div class="row">
+    <div class="col-sm-12">
+
+        <!--Inicio tarjeta-->
+        <div class="card">
+            <div class="card-header">Empleados</div>
+            <div class="card-body">
+
+                <button class="btn btn-success" id="btnNuevo"><i class="fa fa-user mx-2"></i>Nuevo Empleado</button>
+
+                <hr />
+
+                <table class="table table-striped text-center" id="tbEmpleado">
+                    <thead>
+                        <tr>
+                            <th>Nombre</th>
+                            <th>Edad</th>
+                            <th>Salario</th>
+                            <th>Fecha de ingreso</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    </tbody>
+                </table>
+
+            </div>
+        </div>
+        <!--Fin tarjeta-->
+
+    </div>
 </div>
+
+
+
+<!--Inicio Modal-->
+<div class="modal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Detalle Contacto</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <input type="hidden" id="txtIdEmpleado" value="0" />
+                <div class="mb-2">
+                    <label>Nombre del empleado</label>
+                    <input type="text" class="form-control" id="txtNombre" required />
+                </div>
+                <div class="mb-2">
+                    <label>Edad del empleado</label>
+                    <input type="text" class="form-control" id="txtEdad"  required/>
+                </div>
+                <div class="mb-2">
+                    <label>Salario del empleado</label>
+                    <input type="text" class="form-control" id="txtSalario" required/>
+                </div>
+                <div class="mb-2">
+                    <label>Fecha de ingreso del empleado</label>
+                    <input type="text" class="form-control jf" id="txtfechadeIngreso" required/>
+                </div>
+
+            </div>
+            <div class="mb-2">
+                <div class="col-12">
+                    <div class="alert alert-danger" role="alert" id="mensajeerror">
+                        alerta
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary" id="btnGuardar">Guardar</button>
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+            </div>
+        </div>
+    </div>
+</div>
+@section Scripts{
+
+    <script>
+
+        const Modelo_base = {
+            idEmpleado: 0,
+            nombre: "",
+            edad: "",
+            salario:"",
+            fechadeIngreso: ""
+        }
+
+        $(document).ready(() => {
+
+            listaEmpleados();
+        })
+
+        //Para Listar los Empleados
+        function listaEmpleados() {
+
+            fetch("Home/Lista")
+                .then((response) => {
+                    return response.ok ? response.json() : Promise.reject(response)
+                })
+                .then((dataJson) => {
+
+                    $("#tbEmpleado tbody").html("");
+
+                    dataJson.forEach((item) => {
+
+                        $("#tbEmpleado tbody").append(
+                            $("<tr>").append(
+                                $("<td>").text(item.nombre),
+                                $("<td>").text(item.edad),
+                                $("<td>").text(item.salario),
+                                $("<td>").text(item.fechadeIngreso),
+                                $("<td>").append(
+                                    $("<button>").addClass("btn btn-primary btn-sm me-2 btn-editar fa fa-pencil").data("modelo", item),
+                                    $("<button>").addClass("btn btn-danger btn-sm btn-eliminar fa fa-trash").data("id", item.idEmpleado)
+                                )
+                            )
+                        )
+
+                    })
+
+
+                })
+
+        }
+        //Para que muestre el modal
+        function mostrarModal(modelo) {
+
+            if (modelo != null) {
+
+                $("#txtIdEmpleado").val(modelo.idEmpleado);
+                $("#txtNombre").val(modelo.nombre)
+                $("#txtEdad").val(modelo.edad)
+                $("#txtSalario").val(modelo.salario)
+                $("#txtfechadeIngreso").val(modelo.fechadeIngreso)
+                $("#mensajeerror").hide();
+
+            }else{
+
+                $("#txtIdEmpleado").val(0);
+                $("#txtNombre").val("")
+                $("#txtEdad").val("")
+                $("#txtSalario").val("")
+                $("#txtfechadeIngreso").val("")
+                $("#mensajeerror").hide();
+            }
+            
+
+            $('.modal').modal('show');
+        }
+
+
+
+        //Boton para abrir el modal
+        $("#btnNuevo").click(() => {
+ 
+                mostrarModal(null);
+           
+            
+        })
+
+        //Boton guardar/Actualizar
+        $("#btnGuardar").click(() => {
+
+            
+
+            let NuevoModelo = Modelo_base;
+
+            NuevoModelo["idEmpleado"] = $("#txtIdEmpleado").val();
+            NuevoModelo["nombre"] = $("#txtNombre").val();
+            NuevoModelo["edad"] = $("#txtEdad").val();
+            NuevoModelo["salario"] = $("#txtSalario").val();
+            NuevoModelo["fechadeIngreso"] = $("#txtfechadeIngreso").val();
+
+            if ($("#txtIdEmpleado").val() == "0") {
+
+
+                fetch("Home/Insertar", {
+                    method: "POST",
+                    headers: {
+                        'Content-Type': 'application/json;charset=utf-8'
+                    },
+                    body: JSON.stringify(NuevoModelo)
+                })
+                    .then((response) => {
+                        return response.ok ? response.json() : Promise.reject(response)
+                    })
+                    .then((dataJson) => {
+
+                        if (dataJson.valor) {
+                            alert("Registrado");
+                            $('.modal').modal('hide');
+                            listaEmpleados();
+                        }else{
+
+                             $("#mensajeerror").text("debes llenar todos los campos");
+                            $("#mensajeerror").show();
+                        
+                        }
+                    })
+            }else{
+            
+                fetch("Home/Actualizar", {
+                    method: "PUT",
+                    headers: {
+                        'Content-Type': 'application/json;charset=utf-8'
+                    },
+                    body: JSON.stringify(NuevoModelo)
+                })
+                    .then((response) => {
+                        return response.ok ? response.json() : Promise.reject(response)
+                    })
+                    .then((dataJson) => {
+
+                        if (dataJson.valor) {
+                            alert("editado");
+                           
+                            $('.modal').modal('hide');
+                             
+                            listaEmpleados();
+                        }else{
+
+                            $("#mensajeerror").text("debes llenar todos los campos");
+                            $("#mensajeerror").show();
+                        }
+                    })
+            
+            }
+
+        })
+
+        //Para seleccionar la fila
+        $("#tbEmpleado tbody").on("click", ".btn-editar", function () {
+            let empleado = $(this).data("modelo")
+
+            mostrarModal(empleado)
+            console.log(empleado);
+        })
+
+        $("#tbEmpleado tbody").on("click", ".btn-eliminar", function () {
+            let idempleado = $(this).data("id")
+
+            let resultado = window.confirm("¿Desea eliminar el empleado?");
+
+
+            if (resultado) {
+
+
+                fetch("Home/Eliminar?id=" + idempleado, {
+                    method: "DELETE"
+                })
+                    .then((response) => {
+                        return response.ok ? response.json() : Promise.reject(response)
+                    })
+                    .then((dataJson) => {
+
+                        if (dataJson.valor) {
+                            alert("Eliminado")
+                            listaEmpleados();
+                        }
+                    })
+
+
+            }
+
+
+        })
+
+        //Para usar datepicker en el input
+        $('.jf').datepicker({
+            format: "dd/mm/yyyy"
+        });
+    </script>
+
+}
