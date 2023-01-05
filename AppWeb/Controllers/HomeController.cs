@@ -46,17 +46,28 @@ namespace AppWeb.Controllers
 
         public async Task<IActionResult> Insertar([FromBody] VMEmpleado modelo) {
 
+
+            while (modelo == null)
+            {
+               
+                return StatusCode(StatusCodes.Status200OK, new { valor = false });
+
+
+            };
             Empleado NuevoModelo = new Empleado()
             {
-                Nombre=modelo.Nombre,
-                Edad=modelo.Edad,
-                Salario=modelo.Salario,
-                FechadeIngreso=Convert.ToDateTime( modelo.FechadeIngreso)
-            };
+                Nombre = modelo.Nombre,
+                Edad = modelo.Edad,
+                Salario = modelo.Salario,
+                FechadeIngreso = Convert.ToDateTime(modelo.FechadeIngreso)
 
+            };
             bool respuesta = await _empleadoService.Insertar(NuevoModelo);
             return StatusCode(StatusCodes.Status200OK, new { valor = respuesta });
-        
+
+
+
+
         }
 
 
@@ -64,6 +75,11 @@ namespace AppWeb.Controllers
 
         public async Task<IActionResult> Actualizar([FromBody] VMEmpleado modelo)
         {
+
+            while (modelo == null) {
+
+                return StatusCode(StatusCodes.Status200OK, new { valor = false });
+            };
 
             Empleado NuevoModelo = new Empleado()
             {

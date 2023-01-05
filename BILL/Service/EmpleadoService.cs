@@ -21,7 +21,14 @@ namespace BILL.Service
 
         public async Task<bool> Actualizar(Empleado modelo)
         {
-            return await _empleRepo.Actualizar(modelo);
+            try
+            {
+                return await _empleRepo.Actualizar(modelo);
+            }
+            catch {
+
+                return false;
+            }
         }
 
         public async Task<bool> Eliminar(int id)
@@ -31,7 +38,17 @@ namespace BILL.Service
 
         public async Task<bool> Insertar(Empleado modelo)
         {
-            return await _empleRepo.Insertar(modelo);
+            try
+            {
+                return await _empleRepo.Insertar(modelo);
+
+            }
+            catch (Exception ex) {
+
+                return false;
+
+            }
+            
         }
 
         public async Task<Empleado> Obtener(int id)

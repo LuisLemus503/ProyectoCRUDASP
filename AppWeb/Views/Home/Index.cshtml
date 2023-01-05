@@ -46,24 +46,31 @@
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
-                <input type="" id="txtIdEmpleado" value="0" />
+                <input type="hidden" id="txtIdEmpleado" value="0" />
                 <div class="mb-2">
                     <label>Nombre del empleado</label>
-                    <input type="text" class="form-control" id="txtNombre" />
+                    <input type="text" class="form-control" id="txtNombre" required />
                 </div>
                 <div class="mb-2">
                     <label>Edad del empleado</label>
-                    <input type="text" class="form-control" id="txtEdad" />
+                    <input type="text" class="form-control" id="txtEdad"  required/>
                 </div>
                 <div class="mb-2">
                     <label>Salario del empleado</label>
-                    <input type="text" class="form-control" id="txtSalario" />
+                    <input type="text" class="form-control" id="txtSalario" required/>
                 </div>
                 <div class="mb-2">
                     <label>Fecha de ingreso del empleado</label>
-                    <input type="text" class="form-control jf" id="txtfechadeIngreso" />
+                    <input type="text" class="form-control jf" id="txtfechadeIngreso" required/>
                 </div>
 
+            </div>
+            <div class="mb-2">
+                <div class="col-12">
+                    <div class="alert alert-danger" role="alert" id="mensajeerror">
+                        alerta
+                    </div>
+                </div>
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-primary" id="btnGuardar">Guardar</button>
@@ -124,12 +131,6 @@
         //Para que muestre el modal
         function mostrarModal(modelo) {
 
-            $("#txtIdEmpleado").val(0);
-            $("#txtNombre").val("")
-            $("#txtEdad").val("")
-            $("#txtSalario").val("")
-            $("#txtfechadeIngreso").val("")
-
             if (modelo != null) {
 
                 $("#txtIdEmpleado").val(modelo.idEmpleado);
@@ -137,21 +138,36 @@
                 $("#txtEdad").val(modelo.edad)
                 $("#txtSalario").val(modelo.salario)
                 $("#txtfechadeIngreso").val(modelo.fechadeIngreso)
+                $("#mensajeerror").hide();
+
+            }else{
+
+                $("#txtIdEmpleado").val(0);
+                $("#txtNombre").val("")
+                $("#txtEdad").val("")
+                $("#txtSalario").val("")
+                $("#txtfechadeIngreso").val("")
+                $("#mensajeerror").hide();
             }
-
-
+            
 
             $('.modal').modal('show');
         }
 
+
+
         //Boton para abrir el modal
         $("#btnNuevo").click(() => {
-
-            mostrarModal(Modelo_base);
+ 
+                mostrarModal(null);
+           
+            
         })
 
         //Boton guardar/Actualizar
         $("#btnGuardar").click(() => {
+
+            
 
             let NuevoModelo = Modelo_base;
 
@@ -162,6 +178,8 @@
             NuevoModelo["fechadeIngreso"] = $("#txtfechadeIngreso").val();
 
             if ($("#txtIdEmpleado").val() == "0") {
+
+
                 fetch("Home/Insertar", {
                     method: "POST",
                     headers: {
@@ -175,9 +193,14 @@
                     .then((dataJson) => {
 
                         if (dataJson.valor) {
-                            alert("registrado");
+                            alert("Registrado");
                             $('.modal').modal('hide');
                             listaEmpleados();
+                        }else{
+
+                             $("#mensajeerror").text("debes llenar todos los campos");
+                            $("#mensajeerror").show();
+                        
                         }
                     })
             }else{
@@ -196,8 +219,14 @@
 
                         if (dataJson.valor) {
                             alert("editado");
+                           
                             $('.modal').modal('hide');
+                             
                             listaEmpleados();
+                        }else{
+
+                            $("#mensajeerror").text("debes llenar todos los campos");
+                            $("#mensajeerror").show();
                         }
                     })
             
