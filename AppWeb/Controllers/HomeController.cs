@@ -21,6 +21,7 @@ namespace AppWeb.Controllers
         {
             return View();
         }
+        //Listar
         [HttpGet]
         public async Task< IActionResult> Lista()
         {
@@ -42,6 +43,7 @@ namespace AppWeb.Controllers
 
         }
 
+        //Insertar
         [HttpPost]
 
         public async Task<IActionResult> Insertar([FromBody] VMEmpleado modelo) {
@@ -71,6 +73,7 @@ namespace AppWeb.Controllers
         }
 
 
+        //Actualizar
         [HttpPut]
 
         public async Task<IActionResult> Actualizar([FromBody] VMEmpleado modelo)
@@ -95,6 +98,8 @@ namespace AppWeb.Controllers
 
         }
 
+
+       // Eliminar
         [HttpDelete]
 
         public async Task<IActionResult> Eliminar(int id)
