@@ -60,6 +60,38 @@ namespace AppWeb.Controllers
         }
 
 
+        [HttpPut]
+
+        public async Task<IActionResult> Actualizar([FromBody] VMEmpleado modelo)
+        {
+
+            Empleado NuevoModelo = new Empleado()
+            {
+                IdEmpleado=modelo.IdEmpleado,
+                Nombre = modelo.Nombre,
+                Edad = modelo.Edad,
+                Salario = modelo.Salario,
+                FechadeIngreso = Convert.ToDateTime(modelo.FechadeIngreso)
+            };
+
+            bool respuesta = await _empleadoService.Actualizar(NuevoModelo);
+            return StatusCode(StatusCodes.Status200OK, new { valor = respuesta });
+
+        }
+
+        [HttpDelete]
+
+        public async Task<IActionResult> Eliminar(int id)
+        {
+
+
+            bool respuesta = await _empleadoService.Eliminar(id);
+            return StatusCode(StatusCodes.Status200OK, new { valor = respuesta });
+
+
+        }
+
+
         public IActionResult Privacy()
         {
             return View();

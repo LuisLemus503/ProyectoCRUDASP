@@ -48,20 +48,20 @@
             <div class="modal-body">
                 <input type="" id="txtIdEmpleado" value="0" />
                 <div class="mb-2">
-                    <label>Nombre</label>
+                    <label>Nombre del empleado</label>
                     <input type="text" class="form-control" id="txtNombre" />
                 </div>
                 <div class="mb-2">
-                    <label>Telefono</label>
+                    <label>Edad del empleado</label>
                     <input type="text" class="form-control" id="txtEdad" />
                 </div>
                 <div class="mb-2">
-                    <label>Salario</label>
+                    <label>Salario del empleado</label>
                     <input type="text" class="form-control" id="txtSalario" />
                 </div>
                 <div class="mb-2">
-                    <label>Fecha Nacimiento</label>
-                    <input type="text" class="form-control jf" id="txtFechadeIngreso" />
+                    <label>Fecha de ingreso del empleado</label>
+                    <input type="text" class="form-control jf" id="txtfechadeIngreso" />
                 </div>
 
             </div>
@@ -86,10 +86,11 @@
 
         $(document).ready(() => {
 
-            listaContactos();
+            listaEmpleados();
         })
 
-        function listaContactos() {
+        //Para Listar los Empleados
+        function listaEmpleados() {
 
             fetch("Home/Lista")
                 .then((response) => {
@@ -109,7 +110,7 @@
                                 $("<td>").text(item.fechadeIngreso),
                                 $("<td>").append(
                                     $("<button>").addClass("btn btn-primary btn-sm me-2 btn-editar fa fa-pencil").data("modelo", item),
-                                    $("<button>").addClass("btn btn-danger btn-sm btn-eliminar fa fa-trash").data("id", item.idContacto)
+                                    $("<button>").addClass("btn btn-danger btn-sm btn-eliminar fa fa-trash").data("id", item.idEmpleado)
                                 )
                             )
                         )
@@ -120,14 +121,14 @@
                 })
 
         }
-
+        //Para que muestre el modal
         function mostrarModal(modelo) {
 
             $("#txtIdEmpleado").val(0);
             $("#txtNombre").val("")
             $("#txtEdad").val("")
             $("#txtSalario").val("")
-            $("#txtFechadeIngreso").val("")
+            $("#txtfechadeIngreso").val("")
 
             if (modelo != null) {
 
@@ -135,7 +136,7 @@
                 $("#txtNombre").val(modelo.nombre)
                 $("#txtEdad").val(modelo.edad)
                 $("#txtSalario").val(modelo.salario)
-                $("#txtFechadeIngreso").val(modelo.fechadeIngeso)
+                $("#txtfechadeIngreso").val(modelo.fechadeIngreso)
             }
 
 
@@ -143,23 +144,24 @@
             $('.modal').modal('show');
         }
 
-
+        //Boton para abrir el modal
         $("#btnNuevo").click(() => {
 
             mostrarModal(Modelo_base);
         })
 
-
+        //Boton guardar/Actualizar
         $("#btnGuardar").click(() => {
+
             let NuevoModelo = Modelo_base;
 
             NuevoModelo["idEmpleado"] = $("#txtIdEmpleado").val();
             NuevoModelo["nombre"] = $("#txtNombre").val();
             NuevoModelo["edad"] = $("#txtEdad").val();
-            uevoModelo["salario"] = $("#txtSalario").val();
-            NuevoModelo["fechadeIngreso"] = $("#txtFechadeIngreso").val();
+            NuevoModelo["salario"] = $("#txtSalario").val();
+            NuevoModelo["fechadeIngreso"] = $("#txtfechadeIngreso").val();
 
-            if ($("#txtIdEmpleado").val() == "0") {
+            if ($("#idEmpleado").val() == "0") {
                 fetch("Home/Insertar", {
                     method: "POST",
                     headers: {
@@ -175,12 +177,74 @@
                         if (dataJson.valor) {
                             alert("registrado");
                             $('.modal').modal('hide');
-                            listaContactos();
+                            listaEmpleados();
                         }
                     })
-            } 
+            } else {
+                fetch("Home/Actualizar", {
+                    method: "PUT",
+                    headers: {
+                        'Content-Type': 'application/json;charset=utf-8'
+                    },
+                    body: JSON.stringify(NuevoModelo)
+                })
+                    .then((response) => {
+                        return response.ok ? response.json() : Promise.reject(response)
+                    })
+                    .then((dataJson) => {
+
+                        if (dataJson.valor) {
+                            alert("editado");
+                            $('.modal').modal('hide');
+                            listaEmpleados();
+                        }
+                    })
+
+            }
 
         })
+
+        //Para seleccionar la fila
+        $("#tbEmpleado tbody").on("click", ".btn-editar", function () {
+            let empleado = $(this).data("modelo")
+
+            mostrarModal(empleado)
+           // console.log(empleado);
+        })
+
+        $("#tbEmpleado tbody").on("click", ".btn-eliminar", function () {
+            let idempleado = $(this).data("id")
+
+            let resultado = window.confirm("¿Desea eliminar el empleado?");
+
+
+            if (resultado) {
+
+
+                fetch("Home/Eliminar?id=" + idempleado, {
+                    method: "DELETE"
+                })
+                    .then((response) => {
+                        return response.ok ? response.json() : Promise.reject(response)
+                    })
+                    .then((dataJson) => {
+
+                        if (dataJson.valor) {
+                            alert("Eliminado")
+                            listaEmpleados();
+                        }
+                    })
+
+
+            }
+
+
+        })
+
+        //Para usar datepicker en el input
+        $('.jf').datepicker({
+            format: "dd/mm/yyyy"
+        });
     </script>
 
 }
